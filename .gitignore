@@ -1,0 +1,52 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+
+# Build output
+dist/
+build/
+
+# Coverage
+coverage/
+*.lcov
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional: Next.js or similar frameworks
+.next/
+out/
+
+# Optional: lock files if not using
+# package-lock.json
+# yarn.lock
+
+# Optional: Redis dump
+dump.rdb
+
+# Optional: PM2 logs
+pmlogs/
+*.pm2.log
