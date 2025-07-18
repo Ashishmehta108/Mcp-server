@@ -479,6 +479,15 @@ app.delete("/mcp", async (req: Request, res: Response) => {
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello from Bytecraft-mcp server");
 });
+
+setInterval(async () => {
+  try {
+    const response = await fetch(`${process.env.MCP_ClIENT}`);
+  } catch (error) {
+    console.error("Polling error:", error);
+  }
+}, 600000);
+
 // ────── Start ──────
 const PORT = process.env.PORT ?? 3001;
 app.listen(PORT, () => {
