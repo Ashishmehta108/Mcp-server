@@ -245,7 +245,7 @@ server.registerTool(
     );
 
     try {
-      const response = await fetch("http://localhost:3000/api/cart", {
+      const response = await fetch(`${process.env.FRONTEND_URL}/api/cart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -298,7 +298,7 @@ server.registerTool(
     );
 
     try {
-      const response = await fetch("http://localhost:3000/api/cart", {
+      const response = await fetch(`${process.env.FRONTEND_URL}/api/cart`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -377,7 +377,7 @@ server.registerTool(
   async ({ userId }) => {
     console.log("[Tool Called] clearCart");
     try {
-      const response = await fetch("http://localhost:3000/api/cart", {
+      const response = await fetch(`${process.env.FRONTEND_URL}/api/cart`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -415,7 +415,7 @@ server.registerTool(
   async ({ userId }) => {
     console.log("[Tool Called] getCart");
     const response = await axios.post(
-      "http://localhost:3000/api/cart/getcart",
+      `${process.env.FRONTEND_URL}/api/cart/getcart`,
       {
         userId,
       }
