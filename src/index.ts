@@ -196,7 +196,7 @@ server.registerTool(
     const info = {
       description: prod?.description ?? null,
       price: prod?.price ?? null,
-      id:prod.productId ?? null,
+      productId: prod?.id ?? null,
       image: prod?.image ?? null,
       company: prod?.company ?? null,
     };
