@@ -56,6 +56,30 @@ const searchVector = async (query: string) => {
 };
 
 server.registerTool(
+  "getProductId",
+  {
+    description: "Get the ID of a product by query.",
+    inputSchema: {
+      query: z
+        .string()
+        .nonempty()
+        .describe("the queryfor the  product name by the user"),
+    },
+  },
+  async ({ query }) => {
+    const vector = await searchVector(query);
+    const matches = vector[0].metadata;
+    console.log(matches);
+    if (!matches)
+      return { content: [{ type: "text", text: "Product not found" }] };
+    const name = matches["name"] as string;
+    console.log("[Tool Called] getProductId with name:", name);
+    const prod = await prisma.product.findFirst({ where: { name } });
+    return { content: [{ type: "text", text: JSON.stringify(prod?.id) }] };
+  }
+);
+
+server.registerTool(
   "ExtractDetailsFromthePrompt",
   {
     description:
@@ -103,6 +127,7 @@ server.registerTool(
             name: first.name,
             price: first.price,
             company: first.company,
+            productId: first.id,
           },
         }),
       };
@@ -186,7 +211,12 @@ server.registerTool(
     description:
       "Get detailed info about a product including name, description, price, image, and company. Use when user asks about a specific model or product name.",
     inputSchema: {
-      name: z.string().nonempty().describe("Exact product name to lookup"),
+      name: z
+        .string()
+        .nonempty()
+        .describe(
+          "Not exact but the user may give half name you have to find whats could be the potential name of the product for that you can use moreContextFromQuery tool and then get the product details and then probablistically think that what could be the product the user wants to add   product name to lookup"
+        ),
     },
   },
   async ({ name }) => {
@@ -228,7 +258,7 @@ server.registerTool(
       productId: z
         .string()
         .nonempty()
-        .describe("Unique product ID to add to cart"),
+        .describe("Unique productId to add to cart"),
       quantity: z
         .number()
         .optional()
@@ -253,6 +283,7 @@ server.registerTool(
         },
         body: JSON.stringify({ productId, quantity: quantity ?? 1, userId }),
       });
+      console.log(response);
 
       return {
         content: [
@@ -348,7 +379,7 @@ server.registerTool(
           {
             type: "text",
             text:
-              "these are the most matching results of thee query from the database " +
+              "these are the most matching results of thee query from the database  the id of these matching product is the productId,incase  if you want to get productId or name  of the matching products from the query then get it from here and the id in these each matches is the productId of each matched product" +
               JSON.stringify(res),
           },
         ],
@@ -415,13 +446,29 @@ server.registerTool(
   },
   async ({ userId }) => {
     console.log("[Tool Called] getCart");
-    const response = await axios.post(
-      `${process.env.FRONTEND_URL}/api/cart/getcart`,
-      {
-        userId,
-      }
-    );
-    return { content: [{ type: "text", text: JSON.stringify(response.data) }] };
+    // const response=await fetch("http://localhost:3000/api/cart/getcart",{
+    //   method:"POST",
+    //   headers:{
+    //      "Content-Type": "application/json",
+    //    },
+    //    body:JSON.stringify({userId})
+    // })
+    // const response = await axios.post(
+    //   `${process.env.FRONTEND_URL}/api/cart/getcart`,
+    //   {
+    //     userId,
+    //   }
+    // );
+    const res = await fetch(`${process.env.FRONTEND_URL}/api/cart/getcart`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
+    });
+    const response = await res.json();
+    console.log(response);
+    return { content: [{ type: "text", text: JSON.stringify(response.cart) }] };
   }
 );
 
